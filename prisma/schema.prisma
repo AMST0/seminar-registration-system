@@ -7,7 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql" // Vercel deployment için postgresql. Local development için sqlite yapabilirsiniz.
   url      = env("DATABASE_URL")
 }
 
