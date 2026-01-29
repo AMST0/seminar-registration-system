@@ -1,0 +1,9 @@
+# Vercel ignore patterns
+node_modules
+.env
+.env.local
+*.db
+*.db-*
+scripts/
+test-seed.mjs
+PROGRESS.md
