@@ -1,11 +1,17 @@
 /**
- * Image Upload API - Handles local file uploads
+ * Image Upload API - Cloudinary Integration
  * Made by AMST → https://ataberkdudu.info
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
+import { v2 as cloudinary } from 'cloudinary';
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,39 +34,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file size (max 5MB)
-    const maxSize = 5 * 1024 * 1024;
+    // Validate file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024;
     if (file.size > maxSize) {
       return NextResponse.json(
-        { error: 'Dosya boyutu çok büyük. Maksimum 5MB.' },
+        { error: 'Dosya boyutu çok büyük. Maksimum 10MB.' },
         { status: 400 }
       );
     }
 
+    // Convert file to base64
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
+    const base64 = `data:${file.type};base64,${buffer.toString('base64')}`;
 
-    // Create unique filename
-    const timestamp = Date.now();
-    const randomStr = Math.random().toString(36).substring(2, 8);
-    const ext = file.name.split('.').pop() || 'jpg';
-    const filename = `seminar-${timestamp}-${randomStr}.${ext}`;
-
-    // Ensure uploads directory exists
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-    await mkdir(uploadDir, { recursive: true });
-
-    // Save file
-    const filePath = path.join(uploadDir, filename);
-    await writeFile(filePath, buffer);
-
-    // Return the public URL
-    const url = `/uploads/${filename}`;
+    // Upload to Cloudinary
+    const result = await cloudinary.uploader.upload(base64, {
+      folder: 'seminar-registration',
+      resource_type: 'image',
+      transformation: [
+        { width: 1080, height: 1920, crop: 'fill', gravity: 'auto' }, // 9:16 format
+        { quality: 'auto:good' },
+        { fetch_format: 'auto' }
+      ]
+    });
 
     return NextResponse.json({ 
       success: true, 
-      url,
-      filename 
+      url: result.secure_url,
+      public_id: result.public_id 
     });
 
   } catch (error) {
