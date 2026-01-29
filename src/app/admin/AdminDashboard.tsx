@@ -566,7 +566,7 @@ function SeminarModal({ seminar, onClose, onSuccess }: SeminarModalProps) {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-1">
                 <label className="block text-[10px] font-bold text-stone-500 uppercase tracking-wider">Tarih *</label>
                 <input
@@ -574,7 +574,7 @@ function SeminarModal({ seminar, onClose, onSuccess }: SeminarModalProps) {
                   value={formData.date}
                   onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                   required
-                  className="w-full px-4 py-3 border-2 border-stone-200 bg-stone-50
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-stone-200 bg-stone-50
                              focus:border-rose-500 focus:bg-white focus:outline-none
                              transition-colors text-sm"
                 />
@@ -587,7 +587,7 @@ function SeminarModal({ seminar, onClose, onSuccess }: SeminarModalProps) {
                   value={formData.time}
                   onChange={handleTimeChange}
                   maxLength={5}
-                  className="w-full px-4 py-3 border-2 border-stone-200 bg-stone-50
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-stone-200 bg-stone-50
                              focus:border-rose-500 focus:bg-white focus:outline-none
                              transition-colors text-sm"
                 />
