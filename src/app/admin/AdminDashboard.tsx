@@ -53,6 +53,7 @@ export default function AdminDashboard({ seminars: initialSeminars, stats }: Adm
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedSeminar, setSelectedSeminar] = useState<Seminar | null>(null);
   const [showRegistrations, setShowRegistrations] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'seminars' | 'all-registrations'>('seminars');
   const router = useRouter();
 
   const handleDelete = async (id: string) => {
@@ -142,6 +143,45 @@ export default function AdminDashboard({ seminars: initialSeminars, stats }: Adm
           </div>
         </div>
 
+        {/* Tab Navigation */}
+        <div className="flex gap-1 mb-4 sm:mb-6 bg-stone-200 p-1 rounded-none">
+          <button
+            onClick={() => setActiveTab('seminars')}
+            className={`flex-1 py-2 sm:py-2.5 px-3 sm:px-4 text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-colors ${
+              activeTab === 'seminars'
+                ? 'bg-white text-stone-900 shadow-sm'
+                : 'text-stone-500 hover:text-stone-700'
+            }`}
+          >
+            <span className="flex items-center justify-center gap-1.5">
+              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                      d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+              Seminerler
+            </span>
+          </button>
+          <button
+            onClick={() => setActiveTab('all-registrations')}
+            className={`flex-1 py-2 sm:py-2.5 px-3 sm:px-4 text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-colors ${
+              activeTab === 'all-registrations'
+                ? 'bg-white text-stone-900 shadow-sm'
+                : 'text-stone-500 hover:text-stone-700'
+            }`}
+          >
+            <span className="flex items-center justify-center gap-1.5">
+              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                      d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span className="hidden xs:inline">Tüm</span> Kayıtlar
+            </span>
+          </button>
+        </div>
+
+        {/* Tab Content: Seminars */}
+        {activeTab === 'seminars' && (
+          <>
         {/* Actions - Mobile Optimized */}
         <div className="flex flex-row justify-between items-center gap-2 mb-4 sm:mb-6">
           <div>
@@ -338,6 +378,13 @@ export default function AdminDashboard({ seminars: initialSeminars, stats }: Adm
             </div>
           )}
         </div>
+          </>
+        )}
+
+        {/* Tab Content: All Registrations */}
+        {activeTab === 'all-registrations' && (
+          <AllRegistrationsTab seminars={seminars} />
+        )}
       </main>
 
       {/* Footer - Mobile Optimized */}
@@ -369,6 +416,284 @@ export default function AdminDashboard({ seminars: initialSeminars, stats }: Adm
             router.refresh();
           }}
         />
+      )}
+    </div>
+  );
+}
+
+// All Registrations Tab Component
+interface AllRegistrationsTabProps {
+  seminars: Seminar[];
+}
+
+function AllRegistrationsTab({ seminars }: AllRegistrationsTabProps) {
+  const [selectedSeminar, setSelectedSeminar] = useState<string>('all');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [censored, setCensored] = useState(false);
+  const [exporting, setExporting] = useState(false);
+
+  // Tüm kayıtları birleştir
+  const allRegistrations = seminars.flatMap(seminar => 
+    seminar.registrations.map(reg => ({
+      ...reg,
+      seminarTitle: seminar.title,
+      seminarDate: seminar.date,
+      seminarTime: seminar.time,
+    }))
+  ).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+  // Filtrelenmiş kayıtlar
+  const filteredRegistrations = allRegistrations.filter(reg => {
+    if (selectedSeminar !== 'all' && !seminars.find(s => s.id === selectedSeminar && s.registrations.some(r => r.id === reg.id))) {
+      return false;
+    }
+    if (dateFrom && new Date(reg.createdAt) < new Date(dateFrom)) {
+      return false;
+    }
+    if (dateTo) {
+      const endDate = new Date(dateTo);
+      endDate.setHours(23, 59, 59, 999);
+      if (new Date(reg.createdAt) > endDate) {
+        return false;
+      }
+    }
+    return true;
+  });
+
+  // Sansürleme fonksiyonları
+  const censorText = (text: string): string => {
+    if (!text || text.length < 2) return text;
+    const words = text.split(' ');
+    return words.map(word => {
+      if (word.length <= 1) return word;
+      return word[0] + '*'.repeat(word.length - 1);
+    }).join(' ');
+  };
+
+  const censorEmail = (email: string): string => {
+    if (!email) return email;
+    const [localPart, domain] = email.split('@');
+    if (!domain) return email;
+    const censoredLocal = localPart.length <= 2 
+      ? localPart[0] + '*' 
+      : localPart[0] + '*'.repeat(localPart.length - 2) + localPart[localPart.length - 1];
+    return `${censoredLocal}@${domain}`;
+  };
+
+  const censorPhone = (phone: string): string => {
+    if (!phone) return phone;
+    const digits = phone.replace(/\D/g, '');
+    if (digits.length < 4) return phone;
+    return '*'.repeat(digits.length - 4) + digits.slice(-4);
+  };
+
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      const params = new URLSearchParams();
+      if (selectedSeminar !== 'all') params.append('seminarId', selectedSeminar);
+      if (dateFrom) params.append('dateFrom', dateFrom);
+      if (dateTo) params.append('dateTo', dateTo);
+      if (censored) params.append('censored', 'true');
+
+      const response = await fetch(`/api/export?${params.toString()}`);
+      
+      if (!response.ok) throw new Error('Export başarısız');
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = response.headers.get('Content-Disposition')?.split('filename="')[1]?.replace('"', '') || 'kayitlar.xlsx';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    } catch (error) {
+      console.error('Export error:', error);
+      alert('Excel export işlemi başarısız oldu.');
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Header & Filters */}
+      <div className="bg-white p-4 sm:p-6 border-l-4 border-rose-500">
+        <div className="flex flex-col lg:flex-row lg:items-end gap-4">
+          {/* Title */}
+          <div className="flex-1">
+            <h2 className="text-sm sm:text-lg font-bold text-stone-900 uppercase tracking-wide">Tüm Kayıtlar</h2>
+            <p className="text-[10px] sm:text-xs text-stone-500 mt-1">
+              Toplam {filteredRegistrations.length} kayıt
+            </p>
+          </div>
+
+          {/* Filters */}
+          <div className="flex flex-wrap gap-2 sm:gap-3">
+            {/* Seminar Filter */}
+            <select
+              value={selectedSeminar}
+              onChange={(e) => setSelectedSeminar(e.target.value)}
+              className="px-3 py-2 text-xs border-2 border-stone-200 bg-stone-50 
+                         focus:border-rose-500 focus:outline-none"
+            >
+              <option value="all">Tüm Seminerler</option>
+              {seminars.map(s => (
+                <option key={s.id} value={s.id}>{s.title}</option>
+              ))}
+            </select>
+
+            {/* Date From */}
+            <input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+              className="px-3 py-2 text-xs border-2 border-stone-200 bg-stone-50 
+                         focus:border-rose-500 focus:outline-none"
+              placeholder="Başlangıç"
+            />
+
+            {/* Date To */}
+            <input
+              type="date"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+              className="px-3 py-2 text-xs border-2 border-stone-200 bg-stone-50 
+                         focus:border-rose-500 focus:outline-none"
+              placeholder="Bitiş"
+            />
+          </div>
+        </div>
+
+        {/* Export Options */}
+        <div className="flex flex-wrap items-center gap-3 mt-4 pt-4 border-t border-stone-200">
+          {/* Censored Toggle */}
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={censored}
+              onChange={(e) => setCensored(e.target.checked)}
+              className="w-4 h-4 text-rose-500 border-stone-300 rounded focus:ring-rose-500"
+            />
+            <span className="text-xs text-stone-600">Sansürlü Export</span>
+          </label>
+
+          {/* Export Button */}
+          <button
+            onClick={handleExport}
+            disabled={exporting || filteredRegistrations.length === 0}
+            className="inline-flex items-center gap-2 px-4 py-2 font-bold text-[10px] sm:text-xs uppercase tracking-wider
+                       bg-emerald-500 text-white hover:bg-emerald-600
+                       disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {exporting ? (
+              <>
+                <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                İndiriliyor...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Excel İndir
+              </>
+            )}
+          </button>
+
+          {censored && (
+            <span className="text-[10px] text-amber-600 bg-amber-50 px-2 py-1">
+              ⚠️ Veriler sansürlü olarak export edilecek
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Registrations List */}
+      {filteredRegistrations.length === 0 ? (
+        <div className="bg-white p-8 text-center">
+          <svg className="w-12 h-12 text-stone-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <p className="text-stone-500 text-sm">Seçilen kriterlere uygun kayıt bulunamadı.</p>
+        </div>
+      ) : (
+        <>
+          {/* Mobile View */}
+          <div className="sm:hidden space-y-2">
+            {filteredRegistrations.map((reg) => (
+              <div key={reg.id} className="bg-white p-4 border-l-2 border-rose-500">
+                <div className="flex justify-between items-start mb-2">
+                  <p className="font-bold text-sm text-stone-900">
+                    {censored ? censorText(reg.fullName) : reg.fullName}
+                  </p>
+                  <span className="text-[9px] bg-stone-100 text-stone-600 px-2 py-0.5 uppercase">
+                    {reg.seminarTitle.length > 15 ? reg.seminarTitle.slice(0, 15) + '...' : reg.seminarTitle}
+                  </span>
+                </div>
+                <p className="text-[10px] text-stone-500 mb-0.5">
+                  {censored ? censorEmail(reg.email) : reg.email}
+                </p>
+                <p className="text-[10px] text-stone-500 mb-0.5">
+                  {censored ? censorPhone(reg.phone) : reg.phone}
+                </p>
+                <p className="text-[10px] text-stone-400 mt-2">
+                  Kayıt: {formatDate(reg.createdAt)} • {new Date(reg.createdAt).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop View */}
+          <div className="hidden sm:block bg-white overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-[10px] text-stone-400 uppercase tracking-wider border-b border-stone-200 bg-stone-50">
+                    <th className="px-4 py-3 font-semibold">Seminer</th>
+                    <th className="px-4 py-3 font-semibold">Ad Soyad</th>
+                    <th className="px-4 py-3 font-semibold">E-posta</th>
+                    <th className="px-4 py-3 font-semibold">Telefon</th>
+                    <th className="px-4 py-3 font-semibold">Kayıt Tarihi</th>
+                    <th className="px-4 py-3 font-semibold">Saat</th>
+                  </tr>
+                </thead>
+                <tbody className="text-stone-700">
+                  {filteredRegistrations.map((reg) => (
+                    <tr key={reg.id} className="border-b border-stone-100 last:border-0 hover:bg-stone-50">
+                      <td className="px-4 py-3">
+                        <span className="text-[10px] bg-rose-50 text-rose-700 px-2 py-0.5 uppercase font-medium">
+                          {reg.seminarTitle.length > 20 ? reg.seminarTitle.slice(0, 20) + '...' : reg.seminarTitle}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 font-medium">
+                        {censored ? censorText(reg.fullName) : reg.fullName}
+                      </td>
+                      <td className="px-4 py-3">
+                        {censored ? censorEmail(reg.email) : reg.email}
+                      </td>
+                      <td className="px-4 py-3">
+                        {censored ? censorPhone(reg.phone) : reg.phone}
+                      </td>
+                      <td className="px-4 py-3 text-stone-500">{formatDate(reg.createdAt)}</td>
+                      <td className="px-4 py-3 text-stone-500">
+                        {new Date(reg.createdAt).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
