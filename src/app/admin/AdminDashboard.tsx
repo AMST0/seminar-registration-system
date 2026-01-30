@@ -266,7 +266,16 @@ export default function AdminDashboard({ seminars: initialSeminars, stats }: Adm
                   </div>
                   
                   {/* Buttons - Mobile Grid */}
-                  <div className="grid grid-cols-4 sm:flex sm:flex-wrap sm:items-center gap-1">
+                  <div className="grid grid-cols-5 sm:flex sm:flex-wrap sm:items-center gap-1">
+                    <a
+                      href={`/s/${seminar.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-2 sm:px-3 py-1.5 sm:py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
+                                 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors text-center"
+                    >
+                      Görüntüle
+                    </a>
                     <button
                       onClick={() => handleToggleActive(seminar.id, seminar.isActive)}
                       className={'px-2 sm:px-3 py-1.5 sm:py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-colors text-center ' +
