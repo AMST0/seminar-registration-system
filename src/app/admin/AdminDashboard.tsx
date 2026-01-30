@@ -265,59 +265,54 @@ export default function AdminDashboard({ seminars: initialSeminars, stats }: Adm
                     </div>
                   </div>
                   
-                  {/* Action Buttons - Grid for mobile, flex for desktop */}
-                  <div className="grid grid-cols-5 gap-1 sm:flex sm:flex-wrap">
-                    <a
-                      href={`/s/${seminar.slug}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center h-9 px-2 sm:px-3 text-[8px] sm:text-[10px] font-bold uppercase tracking-wide
-                                 bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
-                    >
-                      <svg className="w-3.5 h-3.5 sm:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                      </svg>
-                      <span className="hidden sm:inline">Git</span>
-                    </a>
-                    <button
-                      onClick={() => handleToggleActive(seminar.id, seminar.isActive)}
-                      className={'flex items-center justify-center h-9 px-2 sm:px-3 text-[8px] sm:text-[10px] font-bold uppercase tracking-wide transition-colors ' +
-                        (seminar.isActive
-                          ? 'bg-stone-200 text-stone-700 hover:bg-stone-300'
-                          : 'bg-amber-100 text-amber-700 hover:bg-amber-200')
-                      }
-                    >
-                      {seminar.isActive ? 'Off' : 'On'}
-                    </button>
-                    <button
-                      onClick={() => setShowRegistrations(showRegistrations === seminar.id ? null : seminar.id)}
-                      className="flex items-center justify-center h-9 px-2 sm:px-3 text-[8px] sm:text-[10px] font-bold uppercase tracking-wide
-                                 bg-rose-100 text-rose-700 hover:bg-rose-200 transition-colors"
-                    >
-                      <span className="sm:hidden">{seminar._count.registrations}</span>
-                      <span className="hidden sm:inline">Kayıtlar</span>
-                    </button>
-                    <button
-                      onClick={() => setSelectedSeminar(seminar)}
-                      className="flex items-center justify-center h-9 px-2 sm:px-3 text-[8px] sm:text-[10px] font-bold uppercase tracking-wide
-                                 bg-stone-100 text-stone-700 hover:bg-stone-200 transition-colors"
-                    >
-                      <svg className="w-3.5 h-3.5 sm:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                      </svg>
-                      <span className="hidden sm:inline">Düzenle</span>
-                    </button>
-                    <button
-                      onClick={() => handleDelete(seminar.id)}
-                      className="flex items-center justify-center h-9 px-2 sm:px-3 text-[8px] sm:text-[10px] font-bold uppercase tracking-wide
-                                 bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
-                    >
-                      <svg className="w-3.5 h-3.5 sm:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                      <span className="hidden sm:inline">Sil</span>
-                    </button>
+                  {/* Buttons - Mobile: 2 rows, Desktop: flex */}
+                  <div className="flex flex-col xs:flex-row xs:flex-wrap gap-1">
+                    {/* First row on mobile */}
+                    <div className="flex gap-1">
+                      <a
+                        href={`/s/${seminar.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 xs:flex-none px-3 py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
+                                   bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors text-center"
+                      >
+                        Görüntüle
+                      </a>
+                      <button
+                        onClick={() => handleToggleActive(seminar.id, seminar.isActive)}
+                        className={'flex-1 xs:flex-none px-3 py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-colors text-center ' +
+                          (seminar.isActive
+                            ? 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                            : 'bg-amber-50 text-amber-700 hover:bg-amber-100')
+                        }
+                      >
+                        {seminar.isActive ? 'Deaktif' : 'Aktif'}
+                      </button>
+                    </div>
+                    {/* Second row on mobile */}
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => setShowRegistrations(showRegistrations === seminar.id ? null : seminar.id)}
+                        className="flex-1 xs:flex-none px-3 py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
+                                   bg-rose-50 text-rose-700 hover:bg-rose-100 transition-colors text-center"
+                      >
+                        Kayıtlar
+                      </button>
+                      <button
+                        onClick={() => setSelectedSeminar(seminar)}
+                        className="flex-1 xs:flex-none px-3 py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
+                                   bg-stone-100 text-stone-700 hover:bg-stone-200 transition-colors text-center"
+                      >
+                        Düzenle
+                      </button>
+                      <button
+                        onClick={() => handleDelete(seminar.id)}
+                        className="flex-1 xs:flex-none px-3 py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
+                                   bg-red-50 text-red-700 hover:bg-red-100 transition-colors text-center"
+                      >
+                        Sil
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
