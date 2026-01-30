@@ -265,54 +265,59 @@ export default function AdminDashboard({ seminars: initialSeminars, stats }: Adm
                     </div>
                   </div>
                   
-                  {/* Buttons - Mobile: 2 rows, Desktop: flex */}
-                  <div className="flex flex-col xs:flex-row xs:flex-wrap gap-1">
-                    {/* First row on mobile */}
-                    <div className="flex gap-1">
-                      <a
-                        href={`/s/${seminar.slug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1 xs:flex-none px-3 py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
-                                   bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors text-center"
-                      >
-                        Görüntüle
-                      </a>
-                      <button
-                        onClick={() => handleToggleActive(seminar.id, seminar.isActive)}
-                        className={'flex-1 xs:flex-none px-3 py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-colors text-center ' +
-                          (seminar.isActive
-                            ? 'bg-stone-100 text-stone-600 hover:bg-stone-200'
-                            : 'bg-amber-50 text-amber-700 hover:bg-amber-100')
-                        }
-                      >
-                        {seminar.isActive ? 'Deaktif' : 'Aktif'}
-                      </button>
-                    </div>
-                    {/* Second row on mobile */}
-                    <div className="flex gap-1">
-                      <button
-                        onClick={() => setShowRegistrations(showRegistrations === seminar.id ? null : seminar.id)}
-                        className="flex-1 xs:flex-none px-3 py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
-                                   bg-rose-50 text-rose-700 hover:bg-rose-100 transition-colors text-center"
-                      >
-                        Kayıtlar
-                      </button>
-                      <button
-                        onClick={() => setSelectedSeminar(seminar)}
-                        className="flex-1 xs:flex-none px-3 py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
-                                   bg-stone-100 text-stone-700 hover:bg-stone-200 transition-colors text-center"
-                      >
-                        Düzenle
-                      </button>
-                      <button
-                        onClick={() => handleDelete(seminar.id)}
-                        className="flex-1 xs:flex-none px-3 py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
-                                   bg-red-50 text-red-700 hover:bg-red-100 transition-colors text-center"
-                      >
-                        Sil
-                      </button>
-                    </div>
+                  {/* Action Buttons - Grid for mobile, flex for desktop */}
+                  <div className="grid grid-cols-5 gap-1 sm:flex sm:flex-wrap">
+                    <a
+                      href={`/s/${seminar.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center h-9 px-2 sm:px-3 text-[8px] sm:text-[10px] font-bold uppercase tracking-wide
+                                 bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
+                    >
+                      <svg className="w-3.5 h-3.5 sm:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                      <span className="hidden sm:inline">Git</span>
+                    </a>
+                    <button
+                      onClick={() => handleToggleActive(seminar.id, seminar.isActive)}
+                      className={'flex items-center justify-center h-9 px-2 sm:px-3 text-[8px] sm:text-[10px] font-bold uppercase tracking-wide transition-colors ' +
+                        (seminar.isActive
+                          ? 'bg-stone-200 text-stone-700 hover:bg-stone-300'
+                          : 'bg-amber-100 text-amber-700 hover:bg-amber-200')
+                      }
+                    >
+                      {seminar.isActive ? 'Off' : 'On'}
+                    </button>
+                    <button
+                      onClick={() => setShowRegistrations(showRegistrations === seminar.id ? null : seminar.id)}
+                      className="flex items-center justify-center h-9 px-2 sm:px-3 text-[8px] sm:text-[10px] font-bold uppercase tracking-wide
+                                 bg-rose-100 text-rose-700 hover:bg-rose-200 transition-colors"
+                    >
+                      <span className="sm:hidden">{seminar._count.registrations}</span>
+                      <span className="hidden sm:inline">Kayıtlar</span>
+                    </button>
+                    <button
+                      onClick={() => setSelectedSeminar(seminar)}
+                      className="flex items-center justify-center h-9 px-2 sm:px-3 text-[8px] sm:text-[10px] font-bold uppercase tracking-wide
+                                 bg-stone-100 text-stone-700 hover:bg-stone-200 transition-colors"
+                    >
+                      <svg className="w-3.5 h-3.5 sm:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                      <span className="hidden sm:inline">Düzenle</span>
+                    </button>
+                    <button
+                      onClick={() => handleDelete(seminar.id)}
+                      className="flex items-center justify-center h-9 px-2 sm:px-3 text-[8px] sm:text-[10px] font-bold uppercase tracking-wide
+                                 bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
+                    >
+                      <svg className="w-3.5 h-3.5 sm:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      <span className="hidden sm:inline">Sil</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -534,109 +539,98 @@ function AllRegistrationsTab({ seminars }: AllRegistrationsTabProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {/* Header & Filters */}
-      <div className="bg-white p-4 sm:p-6 border-l-4 border-rose-500">
-        <div className="flex flex-col lg:flex-row lg:items-end gap-4">
-          {/* Title */}
-          <div className="flex-1">
-            <h2 className="text-sm sm:text-lg font-bold text-stone-900 uppercase tracking-wide">Tüm Kayıtlar</h2>
-            <p className="text-[10px] sm:text-xs text-stone-500 mt-1">
-              Toplam {filteredRegistrations.length} kayıt
-            </p>
-          </div>
+      <div className="bg-white p-3 sm:p-6 border-l-4 border-rose-500">
+        {/* Title */}
+        <div className="mb-3 sm:mb-4">
+          <h2 className="text-sm sm:text-lg font-bold text-stone-900 uppercase tracking-wide">Tüm Kayıtlar</h2>
+          <p className="text-[10px] sm:text-xs text-stone-500 mt-0.5">
+            Toplam {filteredRegistrations.length} kayıt
+          </p>
+        </div>
 
-          {/* Filters */}
-          <div className="space-y-2 sm:space-y-0 sm:flex sm:flex-wrap sm:gap-3 w-full lg:w-auto">
-            {/* Seminar Filter */}
-            <select
-              value={selectedSeminar}
-              onChange={(e) => setSelectedSeminar(e.target.value)}
-              className="w-full sm:w-auto px-3 py-2.5 text-xs border-2 border-stone-200 bg-stone-50 
-                         focus:border-rose-500 focus:outline-none rounded-none"
-            >
-              <option value="all">Tüm Seminerler</option>
-              {seminars.map(s => (
-                <option key={s.id} value={s.id}>{s.title}</option>
-              ))}
-            </select>
+        {/* Filters - Stacked on mobile */}
+        <div className="space-y-2 sm:space-y-0 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
+          {/* Seminar Filter */}
+          <select
+            value={selectedSeminar}
+            onChange={(e) => setSelectedSeminar(e.target.value)}
+            className="w-full sm:w-auto h-10 px-3 text-xs border border-stone-300 bg-white
+                       focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500"
+          >
+            <option value="all">Tüm Seminerler</option>
+            {seminars.map(s => (
+              <option key={s.id} value={s.id}>{s.title}</option>
+            ))}
+          </select>
 
-            {/* Date Filters - Side by side on mobile */}
-            <div className="flex gap-2">
-              {/* Date From */}
-              <div className="relative flex-1 sm:flex-none">
-                <label className="absolute -top-2 left-2 px-1 bg-stone-50 text-[9px] text-stone-400 uppercase tracking-wider z-10">Başlangıç</label>
-                <input
-                  type="date"
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
-                  className="w-full px-3 py-2.5 text-xs border-2 border-stone-200 bg-stone-50 
-                             focus:border-rose-500 focus:outline-none rounded-none"
-                />
-              </div>
-
-              {/* Date To */}
-              <div className="relative flex-1 sm:flex-none">
-                <label className="absolute -top-2 left-2 px-1 bg-stone-50 text-[9px] text-stone-400 uppercase tracking-wider z-10">Bitiş</label>
-                <input
-                  type="date"
-                  value={dateTo}
-                  onChange={(e) => setDateTo(e.target.value)}
-                  className="w-full px-3 py-2.5 text-xs border-2 border-stone-200 bg-stone-50 
-                             focus:border-rose-500 focus:outline-none rounded-none"
-                />
-              </div>
+          {/* Date Filters - Compact row */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 flex-1 sm:flex-none">
+              <span className="text-[10px] text-stone-400 hidden sm:inline">Tarih:</span>
+              <input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="flex-1 sm:w-32 h-10 px-2 text-xs border border-stone-300 bg-white
+                           focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500"
+                title="Başlangıç tarihi"
+              />
             </div>
+            <span className="text-stone-400 text-xs">-</span>
+            <input
+              type="date"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+              className="flex-1 sm:w-32 h-10 px-2 text-xs border border-stone-300 bg-white
+                         focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500"
+              title="Bitiş tarihi"
+            />
           </div>
         </div>
 
-        {/* Export Options */}
-        <div className="flex flex-col xs:flex-row xs:items-center gap-3 mt-4 pt-4 border-t border-stone-200">
+        {/* Export Row */}
+        <div className="flex items-center justify-between gap-2 mt-3 pt-3 border-t border-stone-200">
           {/* Censored Toggle */}
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label className="flex items-center gap-2 cursor-pointer min-w-0">
             <input
               type="checkbox"
               checked={censored}
               onChange={(e) => setCensored(e.target.checked)}
-              className="w-4 h-4 text-rose-500 border-stone-300 rounded focus:ring-rose-500"
+              className="w-4 h-4 text-rose-500 border-stone-300 rounded focus:ring-rose-500 flex-shrink-0"
             />
-            <span className="text-xs text-stone-600">Sansürlü Görüntüleme / Export</span>
+            <span className="text-[11px] sm:text-xs text-stone-600 truncate">
+              {censored ? '🔒 Sansürlü' : 'Sansürlü Mod'}
+            </span>
           </label>
 
-          <div className="flex items-center gap-2 flex-wrap">
-            {/* Export Button */}
-            <button
-              onClick={handleExport}
-              disabled={exporting || filteredRegistrations.length === 0}
-              className="inline-flex items-center gap-2 px-4 py-2.5 font-bold text-[10px] sm:text-xs uppercase tracking-wider
-                         bg-emerald-500 text-white hover:bg-emerald-600
-                         disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {exporting ? (
-                <>
-                  <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                  İndiriliyor...
-                </>
-              ) : (
-                <>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  Excel İndir
-                </>
-              )}
-            </button>
-
-            {censored && (
-              <span className="text-[10px] text-amber-600 bg-amber-50 px-2 py-1.5 whitespace-nowrap">
-                ⚠️ Sansürlü mod aktif
-              </span>
+          {/* Export Button */}
+          <button
+            onClick={handleExport}
+            disabled={exporting || filteredRegistrations.length === 0}
+            className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 font-bold text-[10px] sm:text-xs uppercase tracking-wider
+                       bg-emerald-500 text-white hover:bg-emerald-600 flex-shrink-0
+                       disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {exporting ? (
+              <>
+                <svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                <span className="hidden xs:inline">İndiriliyor...</span>
+              </>
+            ) : (
+              <>
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Excel
+              </>
             )}
-          </div>
+          </button>
         </div>
       </div>
 
