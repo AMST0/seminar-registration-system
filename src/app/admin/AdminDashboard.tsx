@@ -265,48 +265,54 @@ export default function AdminDashboard({ seminars: initialSeminars, stats }: Adm
                     </div>
                   </div>
                   
-                  {/* Buttons - Mobile Grid */}
-                  <div className="grid grid-cols-5 sm:flex sm:flex-wrap sm:items-center gap-1">
-                    <a
-                      href={`/s/${seminar.slug}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-2 sm:px-3 py-1.5 sm:py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
-                                 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors text-center"
-                    >
-                      Görüntüle
-                    </a>
-                    <button
-                      onClick={() => handleToggleActive(seminar.id, seminar.isActive)}
-                      className={'px-2 sm:px-3 py-1.5 sm:py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-colors text-center ' +
-                        (seminar.isActive
-                          ? 'bg-stone-100 text-stone-600 hover:bg-stone-200'
-                          : 'bg-amber-50 text-amber-700 hover:bg-amber-100')
-                      }
-                    >
-                      {seminar.isActive ? 'Deaktif' : 'Aktif'}
-                    </button>
-                    <button
-                      onClick={() => setShowRegistrations(showRegistrations === seminar.id ? null : seminar.id)}
-                      className="px-2 sm:px-3 py-1.5 sm:py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
-                                 bg-rose-50 text-rose-700 hover:bg-rose-100 transition-colors text-center"
-                    >
-                      Kayıtlar
-                    </button>
-                    <button
-                      onClick={() => setSelectedSeminar(seminar)}
-                      className="px-2 sm:px-3 py-1.5 sm:py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
-                                 bg-stone-100 text-stone-700 hover:bg-stone-200 transition-colors text-center"
-                    >
-                      Düzenle
-                    </button>
-                    <button
-                      onClick={() => handleDelete(seminar.id)}
-                      className="px-2 sm:px-3 py-1.5 sm:py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
-                                 bg-red-50 text-red-700 hover:bg-red-100 transition-colors text-center"
-                    >
-                      Sil
-                    </button>
+                  {/* Buttons - Mobile: 2 rows, Desktop: flex */}
+                  <div className="flex flex-col xs:flex-row xs:flex-wrap gap-1">
+                    {/* First row on mobile */}
+                    <div className="flex gap-1">
+                      <a
+                        href={`/s/${seminar.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 xs:flex-none px-3 py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
+                                   bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors text-center"
+                      >
+                        Görüntüle
+                      </a>
+                      <button
+                        onClick={() => handleToggleActive(seminar.id, seminar.isActive)}
+                        className={'flex-1 xs:flex-none px-3 py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-colors text-center ' +
+                          (seminar.isActive
+                            ? 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                            : 'bg-amber-50 text-amber-700 hover:bg-amber-100')
+                        }
+                      >
+                        {seminar.isActive ? 'Deaktif' : 'Aktif'}
+                      </button>
+                    </div>
+                    {/* Second row on mobile */}
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => setShowRegistrations(showRegistrations === seminar.id ? null : seminar.id)}
+                        className="flex-1 xs:flex-none px-3 py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
+                                   bg-rose-50 text-rose-700 hover:bg-rose-100 transition-colors text-center"
+                      >
+                        Kayıtlar
+                      </button>
+                      <button
+                        onClick={() => setSelectedSeminar(seminar)}
+                        className="flex-1 xs:flex-none px-3 py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
+                                   bg-stone-100 text-stone-700 hover:bg-stone-200 transition-colors text-center"
+                      >
+                        Düzenle
+                      </button>
+                      <button
+                        onClick={() => handleDelete(seminar.id)}
+                        className="flex-1 xs:flex-none px-3 py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
+                                   bg-red-50 text-red-700 hover:bg-red-100 transition-colors text-center"
+                      >
+                        Sil
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -541,12 +547,12 @@ function AllRegistrationsTab({ seminars }: AllRegistrationsTabProps) {
           </div>
 
           {/* Filters */}
-          <div className="grid grid-cols-1 xs:grid-cols-3 gap-2 sm:gap-3 w-full lg:w-auto">
+          <div className="space-y-2 sm:space-y-0 sm:flex sm:flex-wrap sm:gap-3 w-full lg:w-auto">
             {/* Seminar Filter */}
             <select
               value={selectedSeminar}
               onChange={(e) => setSelectedSeminar(e.target.value)}
-              className="w-full px-3 py-2.5 text-xs border-2 border-stone-200 bg-stone-50 
+              className="w-full sm:w-auto px-3 py-2.5 text-xs border-2 border-stone-200 bg-stone-50 
                          focus:border-rose-500 focus:outline-none rounded-none"
             >
               <option value="all">Tüm Seminerler</option>
@@ -555,28 +561,31 @@ function AllRegistrationsTab({ seminars }: AllRegistrationsTabProps) {
               ))}
             </select>
 
-            {/* Date From */}
-            <div className="relative">
-              <label className="absolute -top-2 left-2 px-1 bg-stone-50 text-[9px] text-stone-400 uppercase tracking-wider">Başlangıç</label>
-              <input
-                type="date"
-                value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
-                className="w-full px-3 py-2.5 text-xs border-2 border-stone-200 bg-stone-50 
-                           focus:border-rose-500 focus:outline-none rounded-none"
-              />
-            </div>
+            {/* Date Filters - Side by side on mobile */}
+            <div className="flex gap-2">
+              {/* Date From */}
+              <div className="relative flex-1 sm:flex-none">
+                <label className="absolute -top-2 left-2 px-1 bg-stone-50 text-[9px] text-stone-400 uppercase tracking-wider z-10">Başlangıç</label>
+                <input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                  className="w-full px-3 py-2.5 text-xs border-2 border-stone-200 bg-stone-50 
+                             focus:border-rose-500 focus:outline-none rounded-none"
+                />
+              </div>
 
-            {/* Date To */}
-            <div className="relative">
-              <label className="absolute -top-2 left-2 px-1 bg-stone-50 text-[9px] text-stone-400 uppercase tracking-wider">Bitiş</label>
-              <input
-                type="date"
-                value={dateTo}
-                onChange={(e) => setDateTo(e.target.value)}
-                className="w-full px-3 py-2.5 text-xs border-2 border-stone-200 bg-stone-50 
-                           focus:border-rose-500 focus:outline-none rounded-none"
-              />
+              {/* Date To */}
+              <div className="relative flex-1 sm:flex-none">
+                <label className="absolute -top-2 left-2 px-1 bg-stone-50 text-[9px] text-stone-400 uppercase tracking-wider z-10">Bitiş</label>
+                <input
+                  type="date"
+                  value={dateTo}
+                  onChange={(e) => setDateTo(e.target.value)}
+                  className="w-full px-3 py-2.5 text-xs border-2 border-stone-200 bg-stone-50 
+                             focus:border-rose-500 focus:outline-none rounded-none"
+                />
+              </div>
             </div>
           </div>
         </div>
