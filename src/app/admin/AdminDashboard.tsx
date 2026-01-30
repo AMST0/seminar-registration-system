@@ -532,13 +532,13 @@ function AllRegistrationsTab({ seminars }: AllRegistrationsTabProps) {
           </div>
 
           {/* Filters */}
-          <div className="flex flex-wrap gap-2 sm:gap-3">
+          <div className="grid grid-cols-1 xs:grid-cols-3 gap-2 sm:gap-3 w-full lg:w-auto">
             {/* Seminar Filter */}
             <select
               value={selectedSeminar}
               onChange={(e) => setSelectedSeminar(e.target.value)}
-              className="px-3 py-2 text-xs border-2 border-stone-200 bg-stone-50 
-                         focus:border-rose-500 focus:outline-none"
+              className="w-full px-3 py-2.5 text-xs border-2 border-stone-200 bg-stone-50 
+                         focus:border-rose-500 focus:outline-none rounded-none"
             >
               <option value="all">Tüm Seminerler</option>
               {seminars.map(s => (
@@ -547,29 +547,33 @@ function AllRegistrationsTab({ seminars }: AllRegistrationsTabProps) {
             </select>
 
             {/* Date From */}
-            <input
-              type="date"
-              value={dateFrom}
-              onChange={(e) => setDateFrom(e.target.value)}
-              className="px-3 py-2 text-xs border-2 border-stone-200 bg-stone-50 
-                         focus:border-rose-500 focus:outline-none"
-              placeholder="Başlangıç"
-            />
+            <div className="relative">
+              <label className="absolute -top-2 left-2 px-1 bg-stone-50 text-[9px] text-stone-400 uppercase tracking-wider">Başlangıç</label>
+              <input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="w-full px-3 py-2.5 text-xs border-2 border-stone-200 bg-stone-50 
+                           focus:border-rose-500 focus:outline-none rounded-none"
+              />
+            </div>
 
             {/* Date To */}
-            <input
-              type="date"
-              value={dateTo}
-              onChange={(e) => setDateTo(e.target.value)}
-              className="px-3 py-2 text-xs border-2 border-stone-200 bg-stone-50 
-                         focus:border-rose-500 focus:outline-none"
-              placeholder="Bitiş"
-            />
+            <div className="relative">
+              <label className="absolute -top-2 left-2 px-1 bg-stone-50 text-[9px] text-stone-400 uppercase tracking-wider">Bitiş</label>
+              <input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="w-full px-3 py-2.5 text-xs border-2 border-stone-200 bg-stone-50 
+                           focus:border-rose-500 focus:outline-none rounded-none"
+              />
+            </div>
           </div>
         </div>
 
         {/* Export Options */}
-        <div className="flex flex-wrap items-center gap-3 mt-4 pt-4 border-t border-stone-200">
+        <div className="flex flex-col xs:flex-row xs:items-center gap-3 mt-4 pt-4 border-t border-stone-200">
           {/* Censored Toggle */}
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -578,41 +582,43 @@ function AllRegistrationsTab({ seminars }: AllRegistrationsTabProps) {
               onChange={(e) => setCensored(e.target.checked)}
               className="w-4 h-4 text-rose-500 border-stone-300 rounded focus:ring-rose-500"
             />
-            <span className="text-xs text-stone-600">Sansürlü Export</span>
+            <span className="text-xs text-stone-600">Sansürlü Görüntüleme / Export</span>
           </label>
 
-          {/* Export Button */}
-          <button
-            onClick={handleExport}
-            disabled={exporting || filteredRegistrations.length === 0}
-            className="inline-flex items-center gap-2 px-4 py-2 font-bold text-[10px] sm:text-xs uppercase tracking-wider
-                       bg-emerald-500 text-white hover:bg-emerald-600
-                       disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {exporting ? (
-              <>
-                <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                İndiriliyor...
-              </>
-            ) : (
-              <>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Excel İndir
-              </>
-            )}
-          </button>
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Export Button */}
+            <button
+              onClick={handleExport}
+              disabled={exporting || filteredRegistrations.length === 0}
+              className="inline-flex items-center gap-2 px-4 py-2.5 font-bold text-[10px] sm:text-xs uppercase tracking-wider
+                         bg-emerald-500 text-white hover:bg-emerald-600
+                         disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {exporting ? (
+                <>
+                  <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  İndiriliyor...
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Excel İndir
+                </>
+              )}
+            </button>
 
-          {censored && (
-            <span className="text-[10px] text-amber-600 bg-amber-50 px-2 py-1">
-              ⚠️ Veriler sansürlü olarak export edilecek
-            </span>
-          )}
+            {censored && (
+              <span className="text-[10px] text-amber-600 bg-amber-50 px-2 py-1.5 whitespace-nowrap">
+                ⚠️ Sansürlü mod aktif
+              </span>
+            )}
+          </div>
         </div>
       </div>
 

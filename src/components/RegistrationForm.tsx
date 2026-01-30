@@ -289,11 +289,9 @@ export default function RegistrationForm({ seminarId, onSuccess }: RegistrationF
                   </div>
                   <span className="text-xs sm:text-sm text-stone-600 leading-relaxed">
                     <a 
-                      href="#kvkk" 
-                      onClick={(e) => {
-                        e.preventDefault();
-                        // Could open KVKK modal here
-                      }}
+                      href="/kvkk"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="text-rose-600 hover:text-rose-700 font-medium underline underline-offset-2"
                     >
                       KVKK Aydınlatma Metni
