@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
       'Telefon': censored ? censorPhone(reg.phone) : reg.phone,
       'Kayıt Tarihi': new Date(reg.createdAt).toLocaleDateString('tr-TR'),
       'Kayıt Saati': new Date(reg.createdAt).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }),
-      'KVKK Onayı': reg.kvkkAccepted ? 'Evet' : 'Hayır',
+      'KVKK Onayı': 'Evet', // Kayıt yapabilmek için KVKK onayı zorunlu
     }));
 
     // Excel oluştur
