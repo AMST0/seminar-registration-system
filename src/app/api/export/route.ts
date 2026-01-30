@@ -99,14 +99,14 @@ export async function GET(request: NextRequest) {
     const excelData = registrations.map((reg, index) => ({
       'No': index + 1,
       'Seminer Adı': reg.seminar.title,
-      'Seminer Tarihi': new Date(reg.seminar.date).toLocaleDateString('tr-TR'),
+      'Seminer Tarihi': new Date(reg.seminar.date).toLocaleDateString('tr-TR', { timeZone: 'Europe/Istanbul' }),
       'Seminer Saati': reg.seminar.time || '-',
       'Konum': reg.seminar.location || '-',
       'Ad Soyad': censored ? censorText(reg.fullName) : reg.fullName,
       'E-posta': censored ? censorEmail(reg.email) : reg.email,
       'Telefon': censored ? censorPhone(reg.phone) : reg.phone,
-      'Kayıt Tarihi': new Date(reg.createdAt).toLocaleDateString('tr-TR'),
-      'Kayıt Saati': new Date(reg.createdAt).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }),
+      'Kayıt Tarihi': new Date(reg.createdAt).toLocaleDateString('tr-TR', { timeZone: 'Europe/Istanbul' }),
+      'Kayıt Saati': new Date(reg.createdAt).toLocaleTimeString('tr-TR', { timeZone: 'Europe/Istanbul', hour: '2-digit', minute: '2-digit' }),
       'KVKK Onayı': 'Evet', // Kayıt yapabilmek için KVKK onayı zorunlu
     }));
 

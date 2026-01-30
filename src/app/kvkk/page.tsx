@@ -76,7 +76,7 @@ export default function KVKKPage() {
               <ul className="list-disc pl-6 space-y-2">
                 <li><strong>Kimlik Bilgileri:</strong> Ad, soyad</li>
                 <li><strong>İletişim Bilgileri:</strong> E-posta adresi, telefon numarası</li>
-                <li><strong>İşlem Güvenliği Bilgileri:</strong> Kayıt tarihi ve saati, IP adresi</li>
+                <li><strong>İşlem Bilgileri:</strong> Kayıt tarihi ve saati</li>
               </ul>
             </section>
 

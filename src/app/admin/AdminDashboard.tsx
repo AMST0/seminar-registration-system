@@ -318,7 +318,7 @@ export default function AdminDashboard({ seminars: initialSeminars, stats }: Adm
                             <p className="text-[10px] text-stone-500 mb-0.5">{reg.email}</p>
                             <p className="text-[10px] text-stone-500 mb-0.5">{reg.phone}</p>
                             <p className="text-[10px] text-stone-400">
-                              {formatDate(reg.createdAt)} • {new Date(reg.createdAt).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                              {formatDate(reg.createdAt)} • {new Date(reg.createdAt).toLocaleTimeString('tr-TR', { timeZone: 'Europe/Istanbul', hour: '2-digit', minute: '2-digit' })}
                             </p>
                           </div>
                         ))}
@@ -342,7 +342,7 @@ export default function AdminDashboard({ seminars: initialSeminars, stats }: Adm
                                 <td className="py-3">{reg.email}</td>
                                 <td className="py-3">{reg.phone}</td>
                                 <td className="py-3 text-stone-500">{formatDate(reg.createdAt)}</td>
-                                <td className="py-3 text-stone-500">{new Date(reg.createdAt).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}</td>
+                                <td className="py-3 text-stone-500">{new Date(reg.createdAt).toLocaleTimeString('tr-TR', { timeZone: 'Europe/Istanbul', hour: '2-digit', minute: '2-digit' })}</td>
                               </tr>
                             ))}
                           </tbody>
@@ -652,7 +652,7 @@ function AllRegistrationsTab({ seminars }: AllRegistrationsTabProps) {
                   {censored ? censorPhone(reg.phone) : reg.phone}
                 </p>
                 <p className="text-[10px] text-stone-400 mt-2">
-                  Kayıt: {formatDate(reg.createdAt)} • {new Date(reg.createdAt).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                  Kayıt: {formatDate(reg.createdAt)} • {new Date(reg.createdAt).toLocaleTimeString('tr-TR', { timeZone: 'Europe/Istanbul', hour: '2-digit', minute: '2-digit' })}
                 </p>
               </div>
             ))}
@@ -691,7 +691,7 @@ function AllRegistrationsTab({ seminars }: AllRegistrationsTabProps) {
                       </td>
                       <td className="px-4 py-3 text-stone-500">{formatDate(reg.createdAt)}</td>
                       <td className="px-4 py-3 text-stone-500">
-                        {new Date(reg.createdAt).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                        {new Date(reg.createdAt).toLocaleTimeString('tr-TR', { timeZone: 'Europe/Istanbul', hour: '2-digit', minute: '2-digit' })}
                       </td>
                     </tr>
                   ))}

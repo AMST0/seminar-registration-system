@@ -30,6 +30,7 @@ export function generateUniqueSlug(text: string): string {
 export function formatDate(date: Date | string): string {
   const d = new Date(date);
   return d.toLocaleDateString('tr-TR', {
+    timeZone: 'Europe/Istanbul',
     day: 'numeric',
     month: 'long',
     year: 'numeric',
