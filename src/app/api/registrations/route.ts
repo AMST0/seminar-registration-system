@@ -54,14 +54,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check capacity
-    if (seminar.maxCapacity && seminar._count.registrations >= seminar.maxCapacity) {
-      return NextResponse.json(
-        { error: 'Seminer kapasitesi dolmuştur.' },
-        { status: 400 }
-      );
-    }
-
     // Check for duplicate registration
     const existingRegistration = await prisma.registration.findUnique({
       where: {
@@ -75,6 +67,14 @@ export async function POST(request: NextRequest) {
     if (existingRegistration) {
       return NextResponse.json(
         { error: 'Bu email adresi ile zaten kayıt yapılmış.' },
+        { status: 400 }
+      );
+    }
+
+    // Check capacity
+    if (seminar.maxCapacity && seminar._count.registrations >= seminar.maxCapacity) {
+      return NextResponse.json(
+        { error: 'Seminer kapasitesi dolmuştur.' },
         { status: 400 }
       );
     }
